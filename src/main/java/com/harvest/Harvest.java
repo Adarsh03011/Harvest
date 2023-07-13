@@ -101,6 +101,7 @@ public class Harvest {
             farmers.add(a);
         }
         sc.close();
+        farmers.remove(0);  // to remove column header
 
         // reading the file price.csv
         List<Price> prices = new ArrayList<>();
@@ -114,9 +115,7 @@ public class Harvest {
             prices.add(a);
         }
         sc1.close();
-        for (int i = 0; i < 49; i++) {
-            farmers.remove(0);
-        }
+        prices.remove(0); // to remove column header
 
         // String the name of gatherers and fruits in list.
         List<String> name = farmers.stream().map(x -> x.getName()).distinct().collect(Collectors.toList());
