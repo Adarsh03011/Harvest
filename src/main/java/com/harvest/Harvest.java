@@ -88,15 +88,6 @@ public class Harvest {
         }
         return sum;
     }
-    // Method to get overall fruit collected by each gatherer.
-    public double fruit_gathered_overall(String name, List<Farmer> f){
-        double sum = 0d;
-        for (int i = 0; i < f.size() ;i++){
-            if(Objects.equals(name, f.get(i).getName()))
-                sum = sum + (f.get(i).getQuantity());
-        }
-        return sum;
-    }
     public static void main(String[] args) throws Exception {
         // reading the file Harvest.csv
         List<Farmer> farmers = new ArrayList<>();
@@ -132,22 +123,13 @@ public class Harvest {
         List<String> fruit = farmers.stream().map(x -> x.getFruit()).distinct().collect(Collectors.toList());
         Harvest obj_harvest = new Harvest();
 
-        // This map is used for storing the gatherer's name and total overall quantity of fruits collected by them.
-        Map<String,Double> sum_fruits = new HashMap<>();
-        for (int i = 0;i < name.size();i++) {
-            double sum1 = obj_harvest.fruit_gathered_overall(name.get(i), farmers);
-            sum_fruits.put(name.get(i),sum1 );
-        }
-        System.out.println("Gatherer's name and total overall quantity of fruits collected by them. ");
-        System.out.println(sum_fruits);
-
         // This map is used to store the best earning fruit overall along with its name.
         Map<String,Double> best_earning_fruit_overall = new HashMap<>();
         for (int i =0; i< fruit.size();i++){
             Double sum = obj_harvest.best_earning_fruit_overall(fruit.get(i), farmers, prices);
             best_earning_fruit_overall.put(fruit.get(i),sum );
         }
-        System.out.println("\n Best earning fruit overall along with its name. ");
+        System.out.println(" Best earning fruit overall along with its name. ");
         System.out.println(best_earning_fruit_overall);
 
         // This map is used to store overall income of each gatherer.
