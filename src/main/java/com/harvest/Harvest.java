@@ -63,7 +63,7 @@ public class Harvest {
         return sum;
     }
     // method to get the best earning fruit overall
-    public double best_earning_fruit_overall(String name, List<Farmer> f, List<Price> p){
+    public double earning_fruit_overall(String name, List<Farmer> f, List<Price> p){
         double sum = 0d;
         for (int i = 0; i < f.size(); i++) {
             for (int j = 0; j < p.size(); j++) {
@@ -123,13 +123,13 @@ public class Harvest {
         Harvest obj_harvest = new Harvest();
 
         // This map is used to store the best earning fruit overall along with its name.
-        Map<String,Double> best_earning_fruit_overall = new HashMap<>();
+        Map<String,Double> earning_from_fruit_overall = new HashMap<>();
         for (int i =0; i< fruit.size();i++){
-            Double sum = obj_harvest.best_earning_fruit_overall(fruit.get(i), farmers, prices);
-            best_earning_fruit_overall.put(fruit.get(i),sum );
+            Double sum = obj_harvest.earning_fruit_overall(fruit.get(i), farmers, prices);
+            earning_from_fruit_overall.put(fruit.get(i),sum );
         }
         System.out.println(" Best earning fruit overall along with its name. ");
-        System.out.println(best_earning_fruit_overall);
+        System.out.println(earning_from_fruit_overall);
 
         // This map is used to store overall income of each gatherer.
         Map<String,Double> earning_overall = new HashMap<>();
@@ -182,7 +182,7 @@ public class Harvest {
             }
             best_gatherer_monthly_fruit.put((Month.of(i + 1)), s1);
         }
-        System.out.println("\n Maximum monthly collection by gatherer");
+        System.out.println("\n Maximum monthly fruit collection by gatherer");
         System.out.println(best_gatherer_monthly_fruit);
 
         // Monthly best gatherer by income
