@@ -7,19 +7,46 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Harvest {
-    public double best_gatherer_monthly(String name , List<Farmer> f, int month ) throws ParseException {
+    // Best gatherer in terms of the amount of fruits gathered every month.
+    public static double monthly_best_gatherer(String name, List<Farmer> f, int month) throws ParseException{
+        double  sum = f.stream()
+                .filter(e -> {
+                    try {
+                        return (Objects.equals(e.getName(), name) && month == e.getMonth());
+                    } catch (ParseException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                })
+                .map(e -> e.getQuantity())
+                .mapToDouble(n-> n*1).summaryStatistics().getSum();
+        return sum;
+    }
+    // Method to get employees that are better at gathering some specific fruit
+    public double gatherer_best_specific_fruit(String name , String fruit_name, List<Farmer>f){
+        double sum = f.stream()
+                .filter(e -> Objects.equals(e.getName(), name)
+                        && Objects.equals(e.getFruit(), fruit_name))
+                .map(e -> e.getQuantity())
+                .mapToDouble(e->e*1).sum();
+        return sum;
+    }
+    // method to get the best profitable and least profitable fruit overall
+    public double earning_fruit_overall(String name, List<Farmer> f, List<Price> p){
         double sum = 0d;
-        for(int i =0; i < f.size();i++){
-            if(Objects.equals(name, f.get(i).getName())
-                    && month == f.get(i).getMonth()){
-                sum = sum + f.get(i).getQuantity();
+        for (int i = 0; i < f.size(); i++) {
+            for (int j = 0; j < p.size(); j++) {
+                if(Objects.equals(name, f.get(i).getFruit()) &&
+                        Objects.equals(name, p.get(j).getFruit())){
+                    if(Objects.equals(f.get(i).getDate(), p.get(j).getDate())){
+                        sum = sum + ((f.get(i).getQuantity()) * (p.get(j).getPrice()));
+                    }
+                }
             }
         }
         return sum;
     }
-
     // Monthly fruit earning
-    public double best_fruit_earning_monthly(String fruit,List<Farmer> f, List<Price>p, int month) throws ParseException {
+    public double fruit_earning_monthly(String fruit, List<Farmer> f, List<Price>p, int month) throws ParseException {
         double sum = 0d;
         for (int i = 0; i < f.size(); i++) {
             for (int j = 0; j < p.size(); j++) {
@@ -62,32 +89,6 @@ public class Harvest {
         }
         return sum;
     }
-    // method to get the best earning fruit overall
-    public double earning_fruit_overall(String name, List<Farmer> f, List<Price> p){
-        double sum = 0d;
-        for (int i = 0; i < f.size(); i++) {
-            for (int j = 0; j < p.size(); j++) {
-                if(Objects.equals(name, f.get(i).getFruit()) &&
-                        Objects.equals(name, p.get(j).getFruit())){
-                    if(Objects.equals(f.get(i).getDate(), p.get(j).getDate())){
-                        sum = sum + ((f.get(i).getQuantity()) * (p.get(j).getPrice()));
-                    }
-                }
-            }
-        }
-        return sum;
-    }
-    // Method to get employees that are better at gathering some specific fruit
-    public double gatherer_best_specific_fruit(String name ,String fruit_name, List<Farmer>f){
-        double sum = 0d;
-        for(int i =0; i< f.size();i++){
-            if(Objects.equals(name, f.get(i).getName()) &&
-                    Objects.equals(fruit_name, f.get(i).getFruit())){
-                sum = sum + f.get(i).getQuantity();
-            }
-        }
-        return sum;
-    }
     public static void main(String[] args) throws Exception {
         // reading the file Harvest.csv
         List<Farmer> farmers = new ArrayList<>();
@@ -122,23 +123,48 @@ public class Harvest {
         List<String> fruit = farmers.stream().map(x -> x.getFruit()).distinct().collect(Collectors.toList());
         Harvest obj_harvest = new Harvest();
 
+        // best gatherer in month
+        Map<Month,String> best_gatherer_monthly_fruit = new EnumMap<>(Month.class);
+        for(int i = 0;i<12;i++){
+            String s1 = "";
+            double max = 0;
+            for(int j = 0;j< name.size();j++){
+                double sum = monthly_best_gatherer(name.get(j),farmers,i);
+                if(sum > max){
+                    max = sum;
+                    s1 = name.get(j);
+                }
+            }
+            best_gatherer_monthly_fruit.put((Month.of(i + 1)), s1);
+        }
+        System.out.println("\n Maximum monthly fruit collection by gatherer");
+        System.out.println(best_gatherer_monthly_fruit);
+
+        // Employees that are best at gathering specific fruits.
+        Map<String,String> gatherer_collecting_specific_fruit = new HashMap<>();
+        for (int i = 0; i < fruit.size(); i++) {
+            String s1 = "";
+            double max = 0d;
+            for (int j = 0; j < name.size(); j++) {
+                double sum = obj_harvest.gatherer_best_specific_fruit(name.get(j), fruit.get(i), farmers);
+                if(sum > max){
+                    max = sum;
+                    s1 = name.get(j);
+                }
+            }
+            gatherer_collecting_specific_fruit.put(fruit.get(i),s1);
+        }
+        System.out.println("\n Gatherer best in collecting specific fruit");
+        System.out.println(gatherer_collecting_specific_fruit);
+
         // This map is used to store the best earning fruit overall along with its name.
         Map<String,Double> earning_from_fruit_overall = new HashMap<>();
         for (int i =0; i< fruit.size();i++){
             Double sum = obj_harvest.earning_fruit_overall(fruit.get(i), farmers, prices);
             earning_from_fruit_overall.put(fruit.get(i),sum );
         }
-        System.out.println(" Best earning fruit overall along with its name. ");
+        System.out.println("\n Best earning fruit overall along with its name. ");
         System.out.println(earning_from_fruit_overall);
-
-        // This map is used to store overall income of each gatherer.
-        Map<String,Double> earning_overall = new HashMap<>();
-        for(int i = 0; i< name.size();i++){
-            Double sum = obj_harvest.gatherer_income_overall(name.get(i),farmers ,prices);
-            earning_overall.put(name.get(i),sum );
-        }
-        System.out.println("\n Overall income of each gatherer. ");
-        System.out.println(earning_overall);
 
         // Monthly best profitable fruit and least profitable fruit.
         Map<Month,String> least_earning_fruit = new EnumMap<>(Month.class);
@@ -149,7 +175,7 @@ public class Harvest {
             String fruit_max = "" ;
             String fruit_min = "";
             for (int j = 0; j < fruit.size(); j++) {
-                double sum = obj_harvest.best_fruit_earning_monthly(fruit.get(j),farmers,prices,i );
+                double sum = obj_harvest.fruit_earning_monthly(fruit.get(j),farmers,prices,i );
                 if(sum > max_sum){
                     max_sum = sum;
                     fruit_max = fruit.get(j);
@@ -167,23 +193,14 @@ public class Harvest {
         System.out.println("\n Monthly least earning fruit log");
         System.out.println(least_earning_fruit);
 
-        // best gatherer in month
-        Map<Month,String> best_gatherer_monthly_fruit = new EnumMap<>(Month.class);
-
-        for(int i = 0;i<12;i++){
-            String s1 = "";
-            double max = 0;
-            for(int j = 0;j< name.size();j++){
-                double sum = obj_harvest.best_gatherer_monthly(name.get(j),farmers,i);
-                if(sum > max){
-                    max = sum;
-                    s1 = name.get(j);
-                }
-            }
-            best_gatherer_monthly_fruit.put((Month.of(i + 1)), s1);
+        // This map is used to store overall income of each gatherer.
+        Map<String,Double> earning_overall = new HashMap<>();
+        for(int i = 0; i< name.size();i++){
+            Double sum = obj_harvest.gatherer_income_overall(name.get(i),farmers ,prices);
+            earning_overall.put(name.get(i),sum );
         }
-        System.out.println("\n Maximum monthly fruit collection by gatherer");
-        System.out.println(best_gatherer_monthly_fruit);
+        System.out.println("\n Overall income of each gatherer. ");
+        System.out.println(earning_overall);
 
         // Monthly best gatherer by income
         Map<Month,String> monthly_best_gatherer_income= new EnumMap<>(Month.class);
@@ -201,22 +218,5 @@ public class Harvest {
         }
         System.out.println("\n Maximum income generated in each month by gatherer");
         System.out.println(monthly_best_gatherer_income);
-
-        // Employees that are best at gathering specific fruits.
-        Map<String,String> gatherer_collecting_specific_fruit = new HashMap<>();
-        for (int i = 0; i < name.size(); i++) {
-            String s1 = "";
-            double max = 0d;
-            for (int j = 0; j < fruit.size(); j++) {
-                double sum = obj_harvest.gatherer_best_specific_fruit(name.get(i), fruit.get(j), farmers);
-                if(sum > max){
-                    max = sum;
-                    s1 = fruit.get(j);
-                }
-            }
-            gatherer_collecting_specific_fruit.put(name.get(i),s1);
-        }
-        System.out.println("\n Gatherer best in collecting specific fruit");
-        System.out.println(gatherer_collecting_specific_fruit);
     }
 }
