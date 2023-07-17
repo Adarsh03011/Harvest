@@ -4,29 +4,18 @@ import java.util.Comparator;
 class Comparator_new<T> implements Comparator<T> {
     @Override
     public int compare(T o1, T o2) {
-        if(o1.equals(o2)){
+        if (o1.equals(o2)) {
             return 0;
-        }
-        else if(o1.hashCode() > o2.hashCode()){
+        } else if (o1.hashCode() > o2.hashCode()) {
             return 1;
-        }
-        else {
+        } else {
             return -1;
         }
     }
-
-    public static class Comparator_problem{
+}
+    public  class Comparator_problem{
 
     public static void main(String[] args) {
-//        MyList<Person> mylist = new MyList<>();
-//        mylist.add(new Person("Adarsh", 1));
-//        mylist.add(new Person("Akash", 2));
-//        mylist.add(new Person("Akarsh", 3));
-//        mylist.add(new Person("Avinash", 4));
-//        mylist.add(new Person("Abhishek", 5));
-//        mylist.add(new Person("Elvish", 6));
-//        System.out.println(mylist.size());
-
         MyList<Integer> list2 = new MyList<>();
         list2.add(1);
         list2.add(2);
@@ -36,14 +25,13 @@ class Comparator_new<T> implements Comparator<T> {
         list2.add(25);
         list2.add(63);
         list2.add(7);
-//        System.out.println(mylist);
-//        System.out.println(mylist.binarySearch(  new Comparator_new() , new Person("Akash", 2)));
-        System.out.println(list2);
-        System.out.println(list2.size());
-        list2.sort(new Comparator_new());
-        System.out.println(list2);
-        System.out.println(list2.binarySearch(new Comparator_new(), 25));
 
+
+        System.out.println("Printing list : " + "\n" + list2);
+        System.out.println("\n Size of list : "+ list2.size());
+        list2.sort(new Comparator_new());
+        System.out.println("\n Sorted list"+ "\n" + list2);
+
+        System.out.println("\nElement position : " + list2.binarySearch(new Comparator_new(), 25));
     }
-}
 }
