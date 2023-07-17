@@ -5,39 +5,35 @@ import java.text.ParseException;
 import java.time.Month;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Harvest {
     // Best gatherer in terms of the amount of fruits gathered every month.
     public static double monthly_best_gatherer(String name, List<Farmer> f, int month) throws ParseException{
         double  sum = f.stream()
-                .filter(e -> {
-                    try {
-                        return (Objects.equals(e.getName(), name) && month == e.getMonth());
-                    } catch (ParseException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                })
+                .filter(e -> e.getName().equals(name) && month == e.getMonth())
                 .map(e -> e.getQuantity())
-                .mapToDouble(n-> n*1).summaryStatistics().getSum();
+                .mapToDouble(n->n).summaryStatistics().getSum();
         return sum;
     }
     // Method to get employees that are better at gathering some specific fruit
     public double gatherer_best_specific_fruit(String name , String fruit_name, List<Farmer>f){
         double sum = f.stream()
-                .filter(e -> Objects.equals(e.getName(), name)
-                        && Objects.equals(e.getFruit(), fruit_name))
+                .filter(e ->e.getName().equals(name)
+                        && (e.getFruit().equals(fruit_name)))
                 .map(e -> e.getQuantity())
-                .mapToDouble(e->e*1).sum();
+                .mapToDouble(e->e).sum();
         return sum;
     }
-    // method to get the best profitable and least profitable fruit overall
+
+//     method to get the best profitable and least profitable fruit overall
     public double earning_fruit_overall(String name, List<Farmer> f, List<Price> p){
         double sum = 0d;
         for (int i = 0; i < f.size(); i++) {
             for (int j = 0; j < p.size(); j++) {
-                if(Objects.equals(name, f.get(i).getFruit()) &&
-                        Objects.equals(name, p.get(j).getFruit())){
-                    if(Objects.equals(f.get(i).getDate(), p.get(j).getDate())){
+                if((name.equals(f.get(i).getFruit())) &&
+                        (name.equals(p.get(j).getFruit()))){
+                    if((f.get(i).getDate().equals(p.get(j).getDate()))){
                         sum = sum + ((f.get(i).getQuantity()) * (p.get(j).getPrice()));
                     }
                 }
@@ -50,9 +46,9 @@ public class Harvest {
         double sum = 0d;
         for (int i = 0; i < f.size(); i++) {
             for (int j = 0; j < p.size(); j++) {
-                if(Objects.equals(fruit, f.get(i).getFruit()) &&
-                        Objects.equals(fruit, p.get(j).getFruit()) &&
-                        Objects.equals(f.get(i).getDate(), p.get(j).getDate()) &&
+                if((fruit.equals(f.get(i).getFruit())) &&
+                        (fruit.equals(p.get(j).getFruit())) &&
+                        (f.get(i).getDate().equals(p.get(j).getDate())) &&
                         month == f.get(i).getMonth()){
                     sum = sum + (f.get(i).getQuantity() * p.get(j).getPrice());
                 }
@@ -65,9 +61,9 @@ public class Harvest {
         double sum = 0d;
         for(int i =0; i<f.size();i++){
             for (int j = 0; j < p.size(); j++) {
-                if(Objects.equals(name, f.get(i).getName()) &&
-                        Objects.equals(f.get(i).getFruit(), p.get(j).getFruit()) &&
-                        Objects.equals(f.get(i).getDate(), p.get(j).getDate()) &&
+                if((name.equals(f.get(i).getName()) ) &&
+                        (f.get(i).getFruit().equals(p.get(j).getFruit()) ) &&
+                        (f.get(i).getDate().equals(p.get(j).getDate())) &&
                         f.get(i).getMonth() == month){
                     sum = sum + ((f.get(i).getQuantity()) * (p.get(j).getPrice()));
                 }
@@ -80,9 +76,9 @@ public class Harvest {
         double sum = 0d;
         for (int i = 0; i < f.size(); i++) {
             for (int j = 0; j < p.size(); j++) {
-                if(Objects.equals(name, f.get(i).getName()) &&
-                        Objects.equals(f.get(i).getFruit(), p.get(j).getFruit()) &&
-                        Objects.equals(f.get(i).getDate(), p.get(j).getDate())){
+                if((name.equals(f.get(i).getName())) &&
+                        (f.get(i).getFruit().equals(p.get(j).getFruit())) &&
+                        (f.get(i).getDate().equals(p.get(j).getDate()))){
                     sum = sum + ((f.get(i).getQuantity()) * (p.get(j).getPrice()));
                 }
             }

@@ -24,9 +24,14 @@ public class Farmer {
     public String getFruit() {
         return this.fruit;
     }
-    public int getMonth() throws ParseException {
+    public int getMonth() {
         SimpleDateFormat spd = new SimpleDateFormat("yyyy-MM-dd");
-        Date d1 = spd.parse(date);
+        Date d1 = null;
+        try {
+            d1 = spd.parse(date);
+        } catch (ParseException e) {
+            return -1;
+        }
         return d1.getMonth();
     }
     public double  getQuantity() {
