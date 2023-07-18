@@ -32,7 +32,7 @@ public class Farmer {
         } catch (ParseException e) {
             return -1;
         }
-        return d1.getMonth();
+        return d1.getMonth()+1;
     }
     public double  getQuantity() {
         return Double.parseDouble(quantity);

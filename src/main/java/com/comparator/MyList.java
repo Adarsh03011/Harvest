@@ -3,6 +3,7 @@ package com.comparator;
 import java.util.ArrayList;
 //import java.util.Comparator;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MyList<T> {
@@ -19,7 +20,8 @@ public class MyList<T> {
         }
         return 1 + length(l.subList(1,l.size()));
     }
-    public int binarySearch(Comparator_new comparator , T a){
+    public int binarySearch(Comparator<T> comparator , T a){
+
         int l_bound = 0;
         int u_bound = list.size()-1;
         while (l_bound < u_bound){
@@ -37,7 +39,7 @@ public class MyList<T> {
         return  -1;
     }
 
-    public void sort(Comparator_new comparator) {
+    public void sort(Comparator<T> comparator) {
         for (int i = 0; i < list.size() - 1; i++) {
             for (int j = 0; j < list.size() - i - 1; j++) {
                 T element1 = list.get(j);

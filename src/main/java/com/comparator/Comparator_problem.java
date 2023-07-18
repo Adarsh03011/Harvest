@@ -33,5 +33,37 @@ class Comparator_new<T> implements Comparator<T> {
         System.out.println("\n Sorted list"+ "\n" + list2);
 
         System.out.println("\nElement position : " + list2.binarySearch(new Comparator_new(), 25));
+
+
+        MyList<Person> mylist = new MyList<>();
+        mylist.add(new Person("Adarsh", 5));
+        mylist.add(new Person("Akash", 2));
+        mylist.add(new Person("Akarsh", 3));
+        mylist.add(new Person("Avinash", 4));
+        mylist.add(new Person("Abhishek", 1));
+        mylist.add(new Person("Elvish", 6));
+        System.out.println("\n " + mylist);
+        System.out.println(mylist.size());
+        mylist.sort(new Comparator<Person>() {
+            @Override
+            public int compare(Person o1, Person o2) {
+                return o1.getId() - o2.getId();
+            }
+        });
+
+        int a = mylist.binarySearch(new Comparator<Person>() {
+            @Override
+            public int compare(Person o1, Person o2) {
+                if(o1.getId() == o2.getId()){
+                    return 0;
+                } else if (o1.getId() > o2.getId()) {
+                    return 1;
+                }
+                return -1;
+            }
+        }, new Person("Adarsh",5));
+        System.out.println(a);
+        System.out.println(mylist);
+
     }
 }
