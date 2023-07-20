@@ -3,23 +3,21 @@ package com.harvest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.time.Month;
 import java.util.*;
 import java.util.stream.Collectors;
 public class Harvest {
-
     private static final DecimalFormat df = new DecimalFormat("0.00");
 
 //     method to get the best profitable and least profitable fruit overall
     public double earning_fruit_overall(String name, List<Farmer> f, List<Price> p){
         double sum = 0d;
-        for (int i = 0; i < f.size(); i++) {
-            for (int j = 0; j < p.size(); j++) {
-                if((name.equals(f.get(i).getFruit())) &&
-                        (name.equals(p.get(j).getFruit()))){
-                    if((f.get(i).getDate().equals(p.get(j).getDate()))){
-                        sum = sum + ((f.get(i).getQuantity()) * (p.get(j).getPrice()));
+        for (Farmer farmer : f) {
+            for (Price price : p) {
+                if ((name.equals(farmer.getFruit())) &&
+                        (name.equals(price.getFruit()))) {
+                    if ((farmer.getDate().equals(price.getDate()))) {
+                        sum = sum + ((farmer.getQuantity()) * (price.getPrice()));
                     }
                 }
             }
@@ -27,30 +25,30 @@ public class Harvest {
         return sum;
     }
     // Monthly fruit earning
-    public double fruit_earning_monthly(String fruit, List<Farmer> f, List<Price>p, int month) throws ParseException {
+    public double fruit_earning_monthly(String fruit, List<Farmer> f, List<Price>p, int month)  {
         double sum = 0d;
-        for (int i = 0; i < f.size(); i++) {
-            for (int j = 0; j < p.size(); j++) {
-                if((fruit.equals(f.get(i).getFruit())) &&
-                        (fruit.equals(p.get(j).getFruit())) &&
-                        (f.get(i).getDate().equals(p.get(j).getDate())) &&
-                        month == ( f.get(i).getMonth())){
-                    sum = sum + (f.get(i).getQuantity() * p.get(j).getPrice());
+        for (Farmer farmer : f) {
+            for (Price price : p) {
+                if ((fruit.equals(farmer.getFruit())) &&
+                        (fruit.equals(price.getFruit())) &&
+                        (farmer.getDate().equals(price.getDate())) &&
+                        month == (farmer.getMonth())) {
+                    sum = sum + (farmer.getQuantity() * price.getPrice());
                 }
             }
         }
         return sum;
     }
     // Monthly best gatherer with respect to income
-    public double gatherer_monthly_income(String name, List<Farmer> f, List<Price>p, int month) throws ParseException {
+    public double gatherer_monthly_income(String name, List<Farmer> f, List<Price>p, int month) {
         double sum = 0d;
-        for (int i = 0; i < f.size(); i++) {
-            for (int j = 0; j < p.size(); j++) {
-                if ((name.equals(f.get(i).getName())) &&
-                        (f.get(i).getFruit().equals(p.get(j).getFruit())) &&
-                        (f.get(i).getDate().equals(p.get(j).getDate())) &&
-                        f.get(i).getMonth() == month) {
-                    sum = sum + ((f.get(i).getQuantity()) * (p.get(j).getPrice()));
+        for (Farmer farmer : f) {
+            for (Price price : p) {
+                if ((name.equals(farmer.getName())) &&
+                        (farmer.getFruit().equals(price.getFruit())) &&
+                        (farmer.getDate().equals(price.getDate())) &&
+                        farmer.getMonth() == month) {
+                    sum = sum + ((farmer.getQuantity()) * (price.getPrice()));
                 }
             }
         }
@@ -61,12 +59,12 @@ public class Harvest {
     // Method to get gatherer's overall income
     public double gatherer_income_overall(String name, List<Farmer> f, List<Price>p){
         double sum = 0d;
-        for (int i = 0; i < f.size(); i++) {
-            for (int j = 0; j < p.size(); j++) {
-                if((name.equals(f.get(i).getName())) &&
-                        (f.get(i).getFruit().equals(p.get(j).getFruit())) &&
-                        (f.get(i).getDate().equals(p.get(j).getDate()))){
-                    sum = sum + ((f.get(i).getQuantity()) * (p.get(j).getPrice()));
+        for (Farmer farmer : f) {
+            for (Price price : p) {
+                if ((name.equals(farmer.getName())) &&
+                        (farmer.getFruit().equals(price.getFruit())) &&
+                        (farmer.getDate().equals(price.getDate()))) {
+                    sum = sum + ((farmer.getQuantity()) * (price.getPrice()));
                 }
             }
         }
@@ -82,8 +80,8 @@ public class Harvest {
         prices.remove(0); // to remove column header
 
         // Storing the name of gatherers and fruits in list.
-        List<String> name = farmers.stream().map(Farmer::getName).distinct().collect(Collectors.toList());
-        List<String> fruit = farmers.stream().map(Farmer::getFruit).distinct().collect(Collectors.toList());
+        List<String> name = farmers.stream().map(Farmer::getName).distinct().toList();
+        List<String> fruit = farmers.stream().map(Farmer::getFruit).distinct().toList();
         Harvest obj_harvest = new Harvest();
 
         // best gatherer in month
@@ -95,7 +93,7 @@ public class Harvest {
                                                 Collectors.reducing(0d, Double::sum)))));
 
         Map<Integer , Gatherer> gathererMonthlyCollection=  map.entrySet().stream()
-                        .collect(Collectors.toMap(x->x.getKey() ,
+                        .collect(Collectors.toMap(Map.Entry::getKey,
                                x-> new Gatherer(x.getValue().entrySet().stream()
                                        .max(Comparator.comparingDouble(Map.Entry::getValue)).get().getKey()
                                        , x.getValue().entrySet().stream().
@@ -103,9 +101,7 @@ public class Harvest {
                                ))
                         );
         System.out.println("\n Printing Monthly best Gatherer");
-        gathererMonthlyCollection.entrySet().forEach(x -> {
-            System.out.println(Month.of(x.getKey()) + " :" + x.getValue());
-        });
+        gathererMonthlyCollection.forEach((key, value) -> System.out.println(Month.of(key) + " :" + value));
         // Employees that are best at gathering specific fruits.
 
         Map<String, Map<String,Double>> map2 = farmers.stream()
@@ -116,24 +112,21 @@ public class Harvest {
                                                 Collectors.reducing(0d,Double::sum)))));
 
 
-        Map<String , Gatherer> m1 = map2.entrySet().stream()
-                .collect(Collectors.toMap(x->x.getKey(),
+        Map<String , Gatherer> fruitCollection = map2.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
                         x->new Gatherer(x.getValue().entrySet().stream().max(
                                 Comparator.comparingDouble(Map.Entry::getValue)).get().getKey() ,
                                 x.getValue().entrySet().stream().max(
                                         Comparator.comparingDouble(Map.Entry::getValue)).get().getValue())));
 
         System.out.println("\n Gatherer best in collecting specific fruit");
-        m1.entrySet().stream().forEach(x->{
-            System.out.println(x.getKey() + ": " + x.getValue());
-        });
-
+        fruitCollection.forEach((key, value) -> System.out.println(key + ": " + value));
 
         // This map is used to store the best earning fruit overall along with its name.
         Map<String,Double> earning_from_fruit_overall = new HashMap<>();
-        for (int i =0; i< fruit.size();i++){
-            Double sum = obj_harvest.earning_fruit_overall(fruit.get(i), farmers, prices);
-            earning_from_fruit_overall.put(fruit.get(i), Double.valueOf(df.format(sum)));
+        for (String value : fruit) {
+            Double sum = obj_harvest.earning_fruit_overall(value, farmers, prices);
+            earning_from_fruit_overall.put(value, Double.valueOf(df.format(sum)));
         }
         System.out.println("\n Best earning fruit overall along with its name. \n" + earning_from_fruit_overall);
 
@@ -145,15 +138,15 @@ public class Harvest {
             double min_sum = 100000d;
             String fruit_max = "" ;
             String fruit_min = "";
-            for (int j = 0; j < fruit.size(); j++) {
-                double sum = obj_harvest.fruit_earning_monthly(fruit.get(j),farmers,prices,i );
-                if(sum > max_sum){
+            for (String s : fruit) {
+                double sum = obj_harvest.fruit_earning_monthly(s, farmers, prices, i);
+                if (sum > max_sum) {
                     max_sum = sum;
-                    fruit_max = fruit.get(j);
+                    fruit_max = s;
                 }
-                if (sum <= min_sum){
+                if (sum <= min_sum) {
                     min_sum = sum;
-                    fruit_min = fruit.get(j);
+                    fruit_min = s;
                 }
             }
             least_earning_fruit.put((Month.of(i)),fruit_min);
@@ -164,9 +157,9 @@ public class Harvest {
 
         // This map is used to store overall income of each gatherer.
         Map<String,Double> earning_overall = new HashMap<>();
-        for(int i = 0; i< name.size();i++){
-            Double sum = obj_harvest.gatherer_income_overall(name.get(i),farmers ,prices);
-            earning_overall.put(name.get(i), Double.valueOf(df.format(sum)));
+        for (String s : name) {
+            Double sum = obj_harvest.gatherer_income_overall(s, farmers, prices);
+            earning_overall.put(s, Double.valueOf(df.format(sum)));
         }
         System.out.println("\n Overall income of each gatherer. \n" + earning_overall);
 
@@ -175,11 +168,11 @@ public class Harvest {
         for(int i = 1; i <= 12 ;i++){
             String s1 = "";
             double max = 0d;
-            for(int j = 0; j< name.size();j++){
-                double sum = obj_harvest.gatherer_monthly_income(name.get(j),farmers,prices,i );
-                if (sum > max){
+            for (String s : name) {
+                double sum = obj_harvest.gatherer_monthly_income(s, farmers, prices, i);
+                if (sum > max) {
                     max = sum;
-                    s1 = name.get(j);
+                    s1 = s;
                 }
             }
             monthly_best_gatherer_income.put((Month.of(i)),s1);
@@ -216,9 +209,28 @@ public class Harvest {
         sc.close();
         return farmers;
     }
+    private static class Pricing{
+        private String fruit;
+        private String date;
+        public Pricing(String name ,String date){
+            this.fruit = name;
+            this.date = date;
+        }
+        public String getFruit() {
+            return fruit;
+        }
+        public String getDate() {
+            return date;
+        }
+        @Override
+        public String toString() {
+            return "{" + "name='" + fruit + '\'' + ", date=" + date + '}';
+        }
+
+    }
     private static class Gatherer {
         private String name;
-        private Double qty;
+        private double qty;
 
         public Gatherer(String name, Double qty) {
             this.name = name;
@@ -226,7 +238,7 @@ public class Harvest {
         }
         @Override
         public String toString() {
-            return "Gatherer{" + "name='" + name + '\'' + ", qty=" + qty + '}';
+            return "{" + "name='" + name + '\'' + ", qty=" + qty + '}';
         }
     }
 }
