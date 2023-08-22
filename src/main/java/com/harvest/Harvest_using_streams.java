@@ -26,7 +26,7 @@ public class Harvest_using_streams {
         farmer1.remove(0); // to remove column header
         prices.remove(0); // to remove column header
 
-        List<Farmer> farmers = farmer1.stream().filter(x->!x.getDate().equals("2020-01-01")).toList();
+        List<Farmer> farmers = farmer1.stream().filter(x->!x.getDate().equals("2020-01-01")).collect(Collectors.toList());
 
         //----------best gatherer in month---------------------------------------------------------------------
         Map<Integer, Map<String, Double>>  map = farmers.stream()
@@ -129,7 +129,7 @@ public class Harvest_using_streams {
 
     private static List<Price> getPrices() throws FileNotFoundException {
         List<Price> prices = new ArrayList<>();
-        Scanner sc1 = new Scanner(new File("src/main/resources/prices.csv"));
+        Scanner sc1 = new Scanner(new File("prices.csv"));
         sc1.useDelimiter(",");
         while (sc1.hasNextLine())
         {
@@ -144,7 +144,7 @@ public class Harvest_using_streams {
 
     private static List<Farmer> getFarmers() throws FileNotFoundException {
         List<Farmer> farmers = new ArrayList<>();
-        Scanner sc = new Scanner(new File("src/main/resources/Harvest.csv"));
+        Scanner sc = new Scanner(new File("harvest.csv"));
         sc.useDelimiter(",");
         while (sc.hasNextLine())
         {
