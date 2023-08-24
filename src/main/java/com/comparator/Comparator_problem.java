@@ -15,10 +15,10 @@ import java.util.Comparator;
         System.out.println("Printing Original List\n" + mylist);
         System.out.println("\nSize of list : " + mylist.size());
 
-        mylist.sort(new Comparator<>() {
+        mylist.sort(new Comparator<Person>() {
             @Override
             public int compare(Person o1, Person o2) {
-                return o1.getId()- o2.getId();
+                return o1.getId() - o2.getId();
             }
         });
         System.out.println("\nSorted list\n" + mylist);
